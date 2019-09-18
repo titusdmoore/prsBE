@@ -26,7 +26,7 @@ namespace PRSv1._0._0 {
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
+            services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<Models.AppDBContext>(options =>
@@ -43,6 +43,8 @@ namespace PRSv1._0._0 {
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials() );
 
             app.UseMvc(routes => {
                 routes.MapRoute(

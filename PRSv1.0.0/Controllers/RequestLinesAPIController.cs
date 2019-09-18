@@ -9,7 +9,7 @@ using PRSv1._0._0.Models;
 
 namespace PRSv1._0._0.Controllers
 { 
-    [Route("api/RequestLine")]
+    [Route("api/Request")]
     [ApiController]
     public class RequestLinesAPIController : ControllerBase
     {

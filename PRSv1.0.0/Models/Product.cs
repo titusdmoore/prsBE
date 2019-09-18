@@ -8,14 +8,13 @@ using System.Threading.Tasks;
 
 namespace PRSv1._0._0.Models {
     public class Product {
-        
-
         [Key]
         public int Id { get; set; }
         [StringLength(30)]
         [Required]
         public string PartNbr { get; set; }
         [Required]
+        [StringLength(30)]
         public string Name { get; set; }
         [Required]
         [RegularExpression(@"^\d+(\.\d{1,2})?$")]

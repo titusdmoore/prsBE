@@ -23,6 +23,7 @@ namespace PRSv1._0._0.Models {
         [Range(0, 99999999999.99)]
         public decimal Total { get; set; } = 0m;
 
+        [Required]
         public int UserId { get; set; }
         public virtual User User { get; set; }
 
