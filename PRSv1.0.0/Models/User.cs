@@ -24,7 +24,7 @@ namespace PRSv1._0._0.Models {
         [DisplayName("Last Name")]
         [StringLength(30)]
         public string Lastname { get; set; }
-        [StringLength(12)]
+        [StringLength(25)]
         public string Phone { get; set; }
         [StringLength(255)]
         public string Email { get; set; }
