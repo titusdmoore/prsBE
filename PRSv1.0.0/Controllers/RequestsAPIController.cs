@@ -24,11 +24,19 @@ namespace PRSv1._0._0.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Request>>> GetRequests()
         {
-            return await _context.Requests.ToListAsync();
+            //return await _context.Requests.ToListAsync();
+            //foreach( var x in _context.Requests) {
+
+            //}
+            var requests = await _context.Requests.ToListAsync();
+            foreach (var x in requests) {
+                RecalculateRequestTotal(x.Id);
+            }
+            return requests;
         }
 
         // GET: api/GetRequestsForReview
-        [Route("/api/GetRequestsForReview")]
+        [Route("/api/ReqReview")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Request>>> GetRequestsForReview() {
             return await _context.Requests.Where(r => r.Status == "Review").ToListAsync();
@@ -45,7 +53,7 @@ namespace PRSv1._0._0.Controllers
         public async Task<ActionResult<Request>> GetRequest(int id)
         {
             var request = await _context.Requests.FindAsync(id);
-
+            RecalculateRequestTotal(request.Id);
             if (request == null)
             {
                 return NotFound();
@@ -55,7 +63,7 @@ namespace PRSv1._0._0.Controllers
         }
 
         // GET: api/SetStatusReview/5
-        [Route("/api/SetStatusReview/{id}")]
+        [Route("/api/SetRev/{id}")]
         [HttpGet]
         public async Task<ActionResult<Request>> SetStatusReview(int id) {
             var request = await _context.Requests.FindAsync(id);
@@ -69,7 +77,7 @@ namespace PRSv1._0._0.Controllers
         }
 
         // GET: api/SetStatusReview/5
-        [Route("/api/SetStatusRejected/{id}")]
+        [Route("/api/SetRej/{id}")]
         [HttpGet]
         public async Task<ActionResult<Request>> SetStatusRejected(int id) {
             var request = await _context.Requests.FindAsync(id);
@@ -83,7 +91,7 @@ namespace PRSv1._0._0.Controllers
         }
 
         // GET: api/SetStatusReview/5
-        [Route("/api/SetStatusApproved/{id}")]
+        [Route("/api/SetApp/{id}")]
         [HttpGet]
         public async Task<ActionResult<Request>> SetStatusApproved(int id) {
             var request = await _context.Requests.FindAsync(id);
@@ -157,6 +165,22 @@ namespace PRSv1._0._0.Controllers
             return _context.Requests.Any(e => e.Id == id);
         }
 
-        
+        private bool RecalculateRequestTotal(int rId) {
+            // get request
+            var request = _context.Requests.FirstOrDefault(r => r.Id == rId);
+
+            if (request == null) {
+                return false;
+            }
+            // Calc Total
+            request.Total = _context.RequestLines.Include(l => l.Product).Where(l => l.RequestId == rId).Sum(l => l.Quantity * l.Product.Price);
+            // update status
+            if (request.Status == "Review") {
+                request.Status = "Revised";
+            }
+            // save
+            _ = _context.SaveChanges();
+            return true;
+        }
     }
 }

@@ -29,27 +29,31 @@ namespace PRSv1._0._0 {
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<Models.AppDBContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("PRSv1Azure")));
+            services.AddDbContext<Models.AppDBContext>(options => {
+                options.UseLazyLoadingProxies();
+                options.UseSqlServer(Configuration.GetConnectionString("PRSv1Azure"));
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+            app.UseDefaultFiles();
+            app.UseFileServer();
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             } else {
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseStaticFiles();
+            
             app.UseCookiePolicy();
 
-            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials() );
+            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
-            app.UseMvc(routes => {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+            app.UseMvc();
+            app.Run(context => {
+                return context.Response.WriteAsync("Titus Moore's prs backend running on azure");
             });
         }
     }

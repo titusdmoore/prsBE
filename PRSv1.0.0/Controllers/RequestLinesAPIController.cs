@@ -9,7 +9,7 @@ using PRSv1._0._0.Models;
 
 namespace PRSv1._0._0.Controllers
 { 
-    [Route("api/Request")]
+    [Route("api/Requestline")]
     [ApiController]
     public class RequestLinesAPIController : ControllerBase
     {
@@ -54,8 +54,8 @@ namespace PRSv1._0._0.Controllers
 
             try
             {
+                var sccss = RecalculateRequestTotal(requestLine.RequestId);
                 await _context.SaveChangesAsync();
-                var sccss = RecalculateRequestTotal(id);
                 if (!sccss) {
                     return this.StatusCode(500);
                 }
@@ -80,9 +80,9 @@ namespace PRSv1._0._0.Controllers
         public async Task<ActionResult<RequestLine>> PostRequestLine(RequestLine requestLine)
         {
             _context.RequestLines.Add(requestLine);
-            await _context.SaveChangesAsync();
 
             var sccss = RecalculateRequestTotal(requestLine.RequestId);
+            await _context.SaveChangesAsync();
             if (!sccss) {
                 return this.StatusCode(500);
             }
@@ -99,10 +99,10 @@ namespace PRSv1._0._0.Controllers
             {
                 return NotFound();
             }
-
+            var rlid = requestLine.RequestId;
             _context.RequestLines.Remove(requestLine);
+            var sccss = RecalculateRequestTotal(rlid);
             await _context.SaveChangesAsync();
-            var sccss = RecalculateRequestTotal(id);
             if (!sccss) {
                 return this.StatusCode(500);
             }

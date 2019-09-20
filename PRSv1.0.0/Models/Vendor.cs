@@ -33,9 +33,8 @@ namespace PRSv1._0._0.Models {
         public string Email { get; set; }
 
         public Vendor() {
-            this.Products = new HashSet<Product>();
         }
 
-        public virtual ICollection<Product> Products { get; set; }
+
     }
 }

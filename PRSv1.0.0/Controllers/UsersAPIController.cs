@@ -57,6 +57,8 @@ namespace PRSv1._0._0.Controllers
             return user;
         }
 
+        
+
         // PUT: api/User/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
@@ -86,6 +88,11 @@ namespace PRSv1._0._0.Controllers
 
             return NoContent();
         }
+        [HttpPost("login")]
+        public User Login(string usname, string psswd) {
+            var user = _context.Users.Where(u => u.Username == usname && u.Password == psswd).FirstOrDefault();
+            return user;
+        }
 
         // POST: api/User
         [HttpPost]
@@ -99,11 +106,9 @@ namespace PRSv1._0._0.Controllers
 
         // DELETE: api/User/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(int id)
-        {
+        public async Task<ActionResult<User>> DeleteUser(int id) {
             var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound();
             }
 
